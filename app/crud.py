@@ -63,12 +63,18 @@ def mark_attendee_present(db: Session, attendee_id: int):
 
 # Generar código QR
 def generate_qr_code(attendee_id: int) -> str:
+    # URL a la que debe redirigir el QR
     url = f"http://localhost:8000/attendees/mark/{attendee_id}/"
     
+    # Genera el código QR
     qr = qrcode.make(url)
+    
+    # Guarda el QR en un buffer de memoria
     buf = BytesIO()
     qr.save(buf, format="PNG")
-    
-    qr_base64 = base64.b64encode(buf.getvalue()).decode("utf-8")
-    return qr_base64
+    buf.seek(0)  # Aseguramos que el puntero esté al inicio del buffer
 
+    # Retornamos la imagen del QR como base64 para poder renderizarla en web
+    qr_base64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+    
+    return qr_base64
