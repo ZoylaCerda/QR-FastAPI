@@ -60,3 +60,10 @@ def mark_attendee_present_qr(attendee_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Attendee not found")
     return {"message": f"Attendee {attendee.name} marked as present"}
 
+# Obtener un asistente por id
+@app.get("/attendees/{attendee_id}", response_model=schemas.Attendee)
+def get_attendee(attendee_id: int, db: Session = Depends(get_db)):
+    attendee = db.query(models.Attendee).filter(models.Attendee.id == attendee_id).first()
+    if attendee is None:
+        raise HTTPException(status_code=404, detail="Attendee not found")
+    return attendee
